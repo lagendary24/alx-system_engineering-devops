@@ -1,0 +1,28 @@
+As a software engineer, you may have come across the classic interview question, “What happens when you type https://www.google.com in your browser and press Enter?” This question is designed to assess your general knowledge of how the web stack works on top of the internet.
+
+Have you ever wondered what happens behind the scenes when you type a URL into your web browser and hit Enter?. As a software engineer, it’s essential to understand how the web stack works on top of the internet. In this article, we’ll explore the entire process, from the moment you hit Enter to the moment you see the website’s content on your screen.
+
+DNS Request
+When you enter a URL, your browser sends a Domain Name System (DNS) request to a DNS server. This request contains the URL you’ve entered, and it asks the DNS server to provide the IP address of the server that hosts the website. If the DNS server has the IP address in its cache memory, it sends it back to your browser. If it doesn’t, it forwards the request to another DNS server until it finds the IP address.
+
+TCP/IP
+Once your browser knows the IP address of the website, it uses the Transmission Control Protocol/Internet Protocol (TCP/IP) to establish a connection with the server. TCP/IP is a set of protocols that allow devices to communicate with each other over the internet. During this process, your browser sends a request to the server to initiate a TCP/IP connection.
+
+Firewall
+If you’re connecting to the website from a corporate network or any other network that has a firewall in place, the firewall checks the request to make sure it’s legitimate. If it is, the request is allowed to proceed.
+
+HTTPS/SSL
+If the website uses HTTPS, your browser initiates a handshake process to establish a secure connection with the server. This process is facilitated by the Secure Sockets Layer (SSL) or Transport Layer Security (TLS) protocol. During the handshake, your browser and the server exchange information and agree on a session key that will be used to encrypt and decrypt all the data sent between them.
+Load-Balancer
+If the website is hosted on multiple servers, a load-balancer distributes incoming requests across those servers to ensure that no server becomes overloaded. The load-balancer sends your request to one of the servers hosting the website.
+
+Web Server
+Once your request reaches the server, a web server software (like Apache or Nginx) receives it and determines which file(s) to send back as the response. The response can include HTML, CSS, JavaScript, images, and other files.
+
+Application Server
+If the website uses server-side scripting, such as PHP or Python, the web server sends the request to an application server to process the code and generate the dynamic content that will be included in the response. The application server can also interact with a database.
+
+Database
+If the website uses a database, the application server interacts with the database to retrieve the required data. The server then uses this data to generate the dynamic content that will be included in the response. Once the response is generated, the server sends it back to your browser.
+
+In conclusion, understanding what happens when you type a URL into your browser and hit Enter is essential for any software engineer working with web technologies. Knowing how the DNS request, TCP/IP, firewall, HTTPS/SSL, load-balancer, web server, application server, and database work together can help you diagnose and fix problems that may arise in your web applications.
