@@ -1,59 +1,87 @@
 #!/usr/bin/python3
-"""Query Reddit API to determine subreddit sub count
-"""
-
+'''A module containing functions for working with the Reddit API.
+'''
 import requests
 
 
-def count_words(subreddit, word_list, count_list=[], next_page=None):
-    """Request subreddit recursively using pagination
-    """
-    # convert word_list to dict with count
-    if not count_list:
-        for word in word_list:
-            count_list.append(dict({'keyword': word,
-                                    'count': 0}))
+def sort_histogram(histogram={}):
+    '''Sorts and prints the given histogram.
+    '''
+    histogram = list(filter(lambda kv: kv[1], histogram))
+    histogram_dict = {}
+    for item in histogram:
+        if item[0] in histogram_dict:
+            histogram_dict[item[0]] += item[1]
+        else:
+            histogram_dict[item[0]] = item[1]
+    histogram = list(histogram_dict.items())
+    histogram.sort(
+        key=lambda kv: kv[0],
+        reverse=False
+    )
+    histogram.sort(
+        key=lambda kv: kv[1],
+        reverse=True
+    )
+    res_str = '\n'.join(list(map(
+        lambda kv: '{}: {}'.format(kv[0], kv[1]),
+        histogram
+    )))
+    if res_str:
+        print(res_str)
 
-    # NETWORKING
-    # set custom user-agent
-    user_agent = '0x16-api_advanced-jmajetich'
-    url = 'https://www.reddit.com/r/{}/hot.json'.format(subreddit)
-    # if page specified, pass as parameter
-    if next_page:
-        url += '?after={}'.format(next_page)
 
-    headers = {'User-Agent': user_agent}
-
-    r = requests.get(url, headers=headers, allow_redirects=False)
-
-    if r.status_code != 200:
-        return
-
-    # DATA PARSING
-    # load response unit from json
-    data = r.json()['data']
-
-    # extract list of pages
-    posts = data['children']
-    for post in posts:
-        title = post['data']['title']
-        for item in count_list:
-            title_lower = title.lower()
-            title_list = title_lower.split()
-            item['count'] += title_list.count(item['keyword'].lower())
-
-    next_page = data['after']
-    if next_page is not None:
-        return count_words(subreddit, word_list, count_list, next_page)
+def count_words(subreddit, word_list, histogram=[], n=0, after=None):
+    '''Counts the number of times each word in a given wordlist
+    occurs in a given subreddit.
+    '''
+    api_headers = {
+        'Accept': 'application/json',
+        'User-Agent': ' '.join([
+            'Mozilla/5.0 (Windows NT 10.0; Win64; x64)',
+            'AppleWebKit/537.36 (KHTML, like Gecko)',
+            'Chrome/97.0.4692.71',
+            'Safari/537.36',
+            'Edg/97.0.1072.62'
+        ])
+    }
+    sort = 'hot'
+    limit = 30
+    res = requests.get(
+        '{}/r/{}/.json?sort={}&limit={}&count={}&after={}'.format(
+            'https://www.reddit.com',
+            subreddit,
+            sort,
+            limit,
+            n,
+            after if after else ''
+        ),
+        headers=api_headers,
+        allow_redirects=False
+    )
+    if not histogram:
+        word_list = list(map(lambda word: word.lower(), word_list))
+        histogram = list(map(lambda word: (word, 0), word_list))
+    if res.status_code == 200:
+        data = res.json()['data']
+        posts = data['children']
+        titles = list(map(lambda post: post['data']['title'], posts))
+        histogram = list(map(
+            lambda kv: (kv[0], kv[1] + sum(list(map(
+                lambda txt: txt.lower().split().count(kv[0]),
+                titles
+            )))),
+            histogram
+        ))
+        if len(posts) >= limit and data['after']:
+            count_words(
+                subreddit,
+                word_list,
+                histogram,
+                n + len(posts),
+                data['after']
+            )
+        else:
+            sort_histogram(histogram)
     else:
-        # sort list by count
-        sorted_list = sorted(count_list,
-                             key=lambda word: (word['count'], word['keyword']),
-                             reverse=True)
-        keywords_matched = 0
-        # print keywords and counts
-        for word in sorted_list:
-            if word['count'] > 0:
-                print('{}: {}'.format(word['keyword'], word['count']))
-                keywords_matched += 1
         return
