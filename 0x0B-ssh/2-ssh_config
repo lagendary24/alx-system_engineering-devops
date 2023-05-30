@@ -1,5 +1,5 @@
-Host Tishly
-    HostName 44.192.48.177
+Host *
+    HostName 3.83.227.237
     User ubuntu
     IdentifyFile ~/.ssh/school
     PasswordAutentication no
