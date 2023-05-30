@@ -1,6 +1,6 @@
-Host *
+Host my_server
     HostName 3.83.227.237
     User ubuntu
-    IdentifyFile ~/.ssh/school
+    IdentityFile ~/.ssh/school
     PasswordAutentication no
     PubkeyAuthentication yes
