@@ -1,4 +1,6 @@
 #!/usr/bin/env bash
 # Script that uses ssh to connect to server
 # Private key applied to user 'ubuntu'
-ssh-copy-id -i ~/.ssh/school.pub ubuntu@3.83.227.237
+
+ssh -i ~/.ssh/school ubuntu@3.83.227.237
+
