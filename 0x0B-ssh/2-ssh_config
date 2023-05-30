@@ -1,0 +1,6 @@
+Host Tishly
+    HostName 44.192.48.177
+    User ubuntu
+    IdentifyFile ~/.ssh/school
+    PasswordAutentication no
+    PubkeyAuthentication yes
